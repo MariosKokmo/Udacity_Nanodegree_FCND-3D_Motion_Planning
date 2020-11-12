@@ -55,6 +55,10 @@ class Action(Enum):
     EAST = (0, 1, 1)
     NORTH = (-1, 0, 1)
     SOUTH = (1, 0, 1)
+    NORTHEAST = (-1,1,np.sqrt(2))
+    NORTHWEST = (-1,-1,np.sqrt(2))
+    SOUTHEAST = (1,1,np.sqrt(2))
+    SOUTHWEST = (1,-1,np.sqrt(2))
 
     @property
     def cost(self):
@@ -78,12 +82,28 @@ def valid_actions(grid, current_node):
 
     if x - 1 < 0 or grid[x - 1, y] == 1:
         valid_actions.remove(Action.NORTH)
+        if Action.NORTHEAST in valid_actions:
+            valid_actions.remove(Action.NORTHEAST)
+        if Action.NORTHWEST in valid_actions:
+            valid_actions.remove(Action.NORTHWEST)
     if x + 1 > n or grid[x + 1, y] == 1:
         valid_actions.remove(Action.SOUTH)
+        if Action.SOUTHEAST in valid_actions:
+            valid_actions.remove(Action.SOUTHEAST)
+        if Action.SOUTHWEST in valid_actions:
+            valid_actions.remove(Action.SOUTHWEST)
     if y - 1 < 0 or grid[x, y - 1] == 1:
         valid_actions.remove(Action.WEST)
+        if Action.SOUTHWEST in valid_actions:
+            valid_actions.remove(Action.SOUTHWEST)
+        if Action.NORTHWEST in valid_actions:
+            valid_actions.remove(Action.NORTHWEST)
     if y + 1 > m or grid[x, y + 1] == 1:
         valid_actions.remove(Action.EAST)
+        if Action.SOUTHEAST in valid_actions:
+            valid_actions.remove(Action.SOUTHEAST)
+        if Action.NORTHEAST in valid_actions:
+            valid_actions.remove(Action.NORTHEAST)
 
     return valid_actions
 
@@ -142,5 +162,6 @@ def a_star(grid, h, start, goal):
 
 
 def heuristic(position, goal_position):
-    return np.linalg.norm(np.array(position) - np.array(goal_position))
+    return ((position[0] - goal_position[0])**2 + (position[1] - goal_position[1])**2)**0.5
+    #return np.linalg.norm(np.array(position) - np.array(goal_position))
 
